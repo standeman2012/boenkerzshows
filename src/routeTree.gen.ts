@@ -9,50 +9,85 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as WachtwoordWijzigenRouteImport } from './routes/wachtwoord-wijzigen'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AppRouteImport } from './routes/_app'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const WachtwoordWijzigenRoute = WachtwoordWijzigenRouteImport.update({
+  id: '/wachtwoord-wijzigen',
+  path: '/wachtwoord-wijzigen',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppRoute
+  '/login': typeof LoginRoute
+  '/wachtwoord-wijzigen': typeof WachtwoordWijzigenRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof AppRoute
+  '/login': typeof LoginRoute
+  '/wachtwoord-wijzigen': typeof WachtwoordWijzigenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_app': typeof AppRoute
+  '/login': typeof LoginRoute
+  '/wachtwoord-wijzigen': typeof WachtwoordWijzigenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/login' | '/wachtwoord-wijzigen'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/login' | '/wachtwoord-wijzigen'
+  id: '__root__' | '/_app' | '/login' | '/wachtwoord-wijzigen'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRoute
+  LoginRoute: typeof LoginRoute
+  WachtwoordWijzigenRoute: typeof WachtwoordWijzigenRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/wachtwoord-wijzigen': {
+      id: '/wachtwoord-wijzigen'
+      path: '/wachtwoord-wijzigen'
+      fullPath: '/wachtwoord-wijzigen'
+      preLoaderRoute: typeof WachtwoordWijzigenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRoute,
+  LoginRoute: LoginRoute,
+  WachtwoordWijzigenRoute: WachtwoordWijzigenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
