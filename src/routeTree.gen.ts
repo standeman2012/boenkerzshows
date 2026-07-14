@@ -12,6 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WachtwoordWijzigenRouteImport } from './routes/wachtwoord-wijzigen'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppProgrammasRouteImport } from './routes/_app.programmas'
+import { Route as AppProgrammagidsRouteImport } from './routes/_app.programmagids'
+import { Route as AppPresentatorenRouteImport } from './routes/_app.presentatoren'
+import { Route as AppInstellingenRouteImport } from './routes/_app.instellingen'
+import { Route as AppGebruikersRouteImport } from './routes/_app.gebruikers'
+import { Route as AppDraaiboekEntryIdRouteImport } from './routes/_app.draaiboek.$entryId'
 
 const WachtwoordWijzigenRoute = WachtwoordWijzigenRouteImport.update({
   id: '/wachtwoord-wijzigen',
@@ -27,33 +34,116 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProgrammasRoute = AppProgrammasRouteImport.update({
+  id: '/programmas',
+  path: '/programmas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProgrammagidsRoute = AppProgrammagidsRouteImport.update({
+  id: '/programmagids',
+  path: '/programmagids',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPresentatorenRoute = AppPresentatorenRouteImport.update({
+  id: '/presentatoren',
+  path: '/presentatoren',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInstellingenRoute = AppInstellingenRouteImport.update({
+  id: '/instellingen',
+  path: '/instellingen',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGebruikersRoute = AppGebruikersRouteImport.update({
+  id: '/gebruikers',
+  path: '/gebruikers',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDraaiboekEntryIdRoute = AppDraaiboekEntryIdRouteImport.update({
+  id: '/draaiboek/$entryId',
+  path: '/draaiboek/$entryId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppRoute
+  '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/wachtwoord-wijzigen': typeof WachtwoordWijzigenRoute
+  '/gebruikers': typeof AppGebruikersRoute
+  '/instellingen': typeof AppInstellingenRoute
+  '/presentatoren': typeof AppPresentatorenRoute
+  '/programmagids': typeof AppProgrammagidsRoute
+  '/programmas': typeof AppProgrammasRoute
+  '/draaiboek/$entryId': typeof AppDraaiboekEntryIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppRoute
   '/login': typeof LoginRoute
   '/wachtwoord-wijzigen': typeof WachtwoordWijzigenRoute
+  '/gebruikers': typeof AppGebruikersRoute
+  '/instellingen': typeof AppInstellingenRoute
+  '/presentatoren': typeof AppPresentatorenRoute
+  '/programmagids': typeof AppProgrammagidsRoute
+  '/programmas': typeof AppProgrammasRoute
+  '/': typeof AppIndexRoute
+  '/draaiboek/$entryId': typeof AppDraaiboekEntryIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_app': typeof AppRoute
+  '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/wachtwoord-wijzigen': typeof WachtwoordWijzigenRoute
+  '/_app/gebruikers': typeof AppGebruikersRoute
+  '/_app/instellingen': typeof AppInstellingenRoute
+  '/_app/presentatoren': typeof AppPresentatorenRoute
+  '/_app/programmagids': typeof AppProgrammagidsRoute
+  '/_app/programmas': typeof AppProgrammasRoute
+  '/_app/': typeof AppIndexRoute
+  '/_app/draaiboek/$entryId': typeof AppDraaiboekEntryIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/wachtwoord-wijzigen'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/wachtwoord-wijzigen'
+    | '/gebruikers'
+    | '/instellingen'
+    | '/presentatoren'
+    | '/programmagids'
+    | '/programmas'
+    | '/draaiboek/$entryId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/wachtwoord-wijzigen'
-  id: '__root__' | '/_app' | '/login' | '/wachtwoord-wijzigen'
+  to:
+    | '/login'
+    | '/wachtwoord-wijzigen'
+    | '/gebruikers'
+    | '/instellingen'
+    | '/presentatoren'
+    | '/programmagids'
+    | '/programmas'
+    | '/'
+    | '/draaiboek/$entryId'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/login'
+    | '/wachtwoord-wijzigen'
+    | '/_app/gebruikers'
+    | '/_app/instellingen'
+    | '/_app/presentatoren'
+    | '/_app/programmagids'
+    | '/_app/programmas'
+    | '/_app/'
+    | '/_app/draaiboek/$entryId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AppRoute: typeof AppRoute
+  AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   WachtwoordWijzigenRoute: typeof WachtwoordWijzigenRoute
 }
@@ -81,11 +171,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/programmas': {
+      id: '/_app/programmas'
+      path: '/programmas'
+      fullPath: '/programmas'
+      preLoaderRoute: typeof AppProgrammasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/programmagids': {
+      id: '/_app/programmagids'
+      path: '/programmagids'
+      fullPath: '/programmagids'
+      preLoaderRoute: typeof AppProgrammagidsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/presentatoren': {
+      id: '/_app/presentatoren'
+      path: '/presentatoren'
+      fullPath: '/presentatoren'
+      preLoaderRoute: typeof AppPresentatorenRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/instellingen': {
+      id: '/_app/instellingen'
+      path: '/instellingen'
+      fullPath: '/instellingen'
+      preLoaderRoute: typeof AppInstellingenRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/gebruikers': {
+      id: '/_app/gebruikers'
+      path: '/gebruikers'
+      fullPath: '/gebruikers'
+      preLoaderRoute: typeof AppGebruikersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/draaiboek/$entryId': {
+      id: '/_app/draaiboek/$entryId'
+      path: '/draaiboek/$entryId'
+      fullPath: '/draaiboek/$entryId'
+      preLoaderRoute: typeof AppDraaiboekEntryIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppGebruikersRoute: typeof AppGebruikersRoute
+  AppInstellingenRoute: typeof AppInstellingenRoute
+  AppPresentatorenRoute: typeof AppPresentatorenRoute
+  AppProgrammagidsRoute: typeof AppProgrammagidsRoute
+  AppProgrammasRoute: typeof AppProgrammasRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppDraaiboekEntryIdRoute: typeof AppDraaiboekEntryIdRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppGebruikersRoute: AppGebruikersRoute,
+  AppInstellingenRoute: AppInstellingenRoute,
+  AppPresentatorenRoute: AppPresentatorenRoute,
+  AppProgrammagidsRoute: AppProgrammagidsRoute,
+  AppProgrammasRoute: AppProgrammasRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppDraaiboekEntryIdRoute: AppDraaiboekEntryIdRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  AppRoute: AppRoute,
+  AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   WachtwoordWijzigenRoute: WachtwoordWijzigenRoute,
 }
