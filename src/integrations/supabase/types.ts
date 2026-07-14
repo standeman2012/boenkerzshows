@@ -14,16 +14,260 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      app_settings: {
+        Row: {
+          background_url: string | null
+          id: number
+          logo_text: string
+          logo_url: string | null
+          updated_at: string
+          use_logo: boolean
+        }
+        Insert: {
+          background_url?: string | null
+          id?: number
+          logo_text?: string
+          logo_url?: string | null
+          updated_at?: string
+          use_logo?: boolean
+        }
+        Update: {
+          background_url?: string | null
+          id?: number
+          logo_text?: string
+          logo_url?: string | null
+          updated_at?: string
+          use_logo?: boolean
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          first_name: string
+          id: string
+          is_presenter: boolean
+          last_name: string
+          must_change_password: boolean
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          first_name: string
+          id: string
+          is_presenter?: boolean
+          last_name: string
+          must_change_password?: boolean
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          first_name?: string
+          id?: string
+          is_presenter?: boolean
+          last_name?: string
+          must_change_password?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      program_permissions: {
+        Row: {
+          can_edit: boolean
+          id: string
+          program_id: string
+          user_id: string
+        }
+        Insert: {
+          can_edit?: boolean
+          id?: string
+          program_id: string
+          user_id: string
+        }
+        Update: {
+          can_edit?: boolean
+          id?: string
+          program_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_permissions_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programs: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          presenter_id: string | null
+          type: Database["public"]["Enums"]["program_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          presenter_id?: string | null
+          type?: Database["public"]["Enums"]["program_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          presenter_id?: string | null
+          type?: Database["public"]["Enums"]["program_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programs_presenter_id_fkey"
+            columns: ["presenter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rundown_items: {
+        Row: {
+          artist: string | null
+          content: string | null
+          created_at: string
+          description: string | null
+          duration_seconds: number
+          id: string
+          position: number
+          schedule_entry_id: string
+          title: string
+          type: Database["public"]["Enums"]["rundown_item_type"]
+          updated_at: string
+        }
+        Insert: {
+          artist?: string | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number
+          id?: string
+          position?: number
+          schedule_entry_id: string
+          title?: string
+          type: Database["public"]["Enums"]["rundown_item_type"]
+          updated_at?: string
+        }
+        Update: {
+          artist?: string | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number
+          id?: string
+          position?: number
+          schedule_entry_id?: string
+          title?: string
+          type?: Database["public"]["Enums"]["rundown_item_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rundown_items_schedule_entry_id_fkey"
+            columns: ["schedule_entry_id"]
+            isOneToOne: false
+            referencedRelation: "schedule_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      schedule_entries: {
+        Row: {
+          created_at: string
+          end_at: string
+          id: string
+          program_id: string
+          recurrence: Database["public"]["Enums"]["recurrence_type"]
+          recurrence_until: string | null
+          start_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_at: string
+          id?: string
+          program_id: string
+          recurrence?: Database["public"]["Enums"]["recurrence_type"]
+          recurrence_until?: string | null
+          start_at: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_at?: string
+          id?: string
+          program_id?: string
+          recurrence?: Database["public"]["Enums"]["recurrence_type"]
+          recurrence_until?: string | null
+          start_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_entries_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "presenter"
+      program_type: "live" | "non_stop" | "recorded"
+      recurrence_type: "once" | "daily" | "weekly"
+      rundown_item_type: "item" | "song" | "jingle" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +394,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "presenter"],
+      program_type: ["live", "non_stop", "recorded"],
+      recurrence_type: ["once", "daily", "weekly"],
+      rundown_item_type: ["item", "song", "jingle", "other"],
+    },
   },
 } as const
