@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useParams, useNavigate } from "@tanstack/react-router";
-import { fmtDurationSeconds } from "@/lib/date-utils";
+
 import { RichTextEditor, type RemoteCaret } from "@/components/RichTextEditor";
 import { ArrowLeft, Plus, Trash2, Music, Radio, Sparkles, FileText, X, Loader2, GripVertical, Printer } from "lucide-react";
 
