@@ -492,5 +492,3 @@ function AddItemModal({ onClose, onAdd }: { onClose: () => void; onAdd: (type: I
     </div>
   );
 }
-// keep fmtDurationSeconds import used elsewhere
-export const _unused = fmtDurationSeconds;
