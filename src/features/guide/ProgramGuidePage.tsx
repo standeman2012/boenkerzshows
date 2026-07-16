@@ -5,7 +5,7 @@ import { addDays, DAY_LABELS_LONG, fmtDate, fmtTime, startOfWeek } from "@/lib/d
 import { ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 
 type Program = { id: string; name: string; type: "live" | "non_stop" | "recorded" };
-type Entry = { id: string; program_id: string; start_at: string; end_at: string; recurrence: "once" | "daily" | "weekly"; recurrence_until: string | null };
+type Entry = { id: string; program_id: string; start_at: string; end_at: string; recurrence: "once" | "daily" | "weekly" | "biweekly"; recurrence_until: string | null };
 
 const HOUR_HEIGHT = 48; // px per hour
 const TOTAL_HEIGHT = HOUR_HEIGHT * 24;
