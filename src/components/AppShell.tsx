@@ -8,8 +8,8 @@ import {
   UserCircle,
   LogOut,
   Menu,
-  Bell,
-  Search,
+
+
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
