@@ -359,15 +359,16 @@ function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: 
   const [description, setDescription] = useState(item.description ?? "");
   const [duration, setDuration] = useState(item.duration_seconds);
   const [content, setContent] = useState(item.content ?? "");
+  const [hasIntro, setHasIntro] = useState(item.has_intro);
 
   useEffect(() => {
     setTitle(item.title); setArtist(item.artist ?? ""); setDescription(item.description ?? "");
-    setDuration(item.duration_seconds); setContent(item.content ?? "");
+    setDuration(item.duration_seconds); setContent(item.content ?? ""); setHasIntro(item.has_intro);
   }, [item.id]);
 
   const meta = TYPE_META[item.type];
   const Icon = meta.icon;
-  const showEditor = item.type === "item" || item.type === "other";
+  const showEditor = item.type === "item" || item.type === "other" || (item.type === "song" && hasIntro);
 
   const commit = (patch: Partial<Item>) => onSave(patch);
 
