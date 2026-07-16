@@ -233,7 +233,7 @@ export function RundownPage() {
             </div>
           )}
           <button onClick={printDraaiboek} className="h-9 px-3 rounded-lg border border-border hover:bg-muted text-sm font-medium flex items-center gap-2">
-            <Printer className="h-4 w-4" />Afdrukken
+            <Printer className="h-4 w-4" />{canEdit ? "Bekijken" : "Afdrukken"}
           </button>
           {canEdit && items.length > 0 && (
             <button onClick={() => setShowAdd(true)} className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 flex items-center gap-2">
