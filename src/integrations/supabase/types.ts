@@ -181,6 +181,7 @@ export type Database = {
           created_at: string
           description: string | null
           duration_seconds: number
+          has_intro: boolean
           id: string
           position: number
           schedule_entry_id: string
@@ -194,6 +195,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           duration_seconds?: number
+          has_intro?: boolean
           id?: string
           position?: number
           schedule_entry_id: string
@@ -207,6 +209,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           duration_seconds?: number
+          has_intro?: boolean
           id?: string
           position?: number
           schedule_entry_id?: string
