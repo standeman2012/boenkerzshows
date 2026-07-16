@@ -16,6 +16,7 @@ type Item = {
   description: string | null;
   duration_seconds: number;
   content: string | null;
+  has_intro: boolean;
 };
 
 const TYPE_META = {
