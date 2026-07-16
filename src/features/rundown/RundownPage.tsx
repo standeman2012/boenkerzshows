@@ -16,6 +16,7 @@ type Item = {
   description: string | null;
   duration_seconds: number;
   content: string | null;
+  has_intro: boolean;
 };
 
 const TYPE_META = {
@@ -233,7 +234,7 @@ export function RundownPage() {
             </div>
           )}
           <button onClick={printDraaiboek} className="h-9 px-3 rounded-lg border border-border hover:bg-muted text-sm font-medium flex items-center gap-2">
-            <Printer className="h-4 w-4" />Afdrukken
+            <Printer className="h-4 w-4" />{canEdit ? "Bekijken" : "Afdrukken"}
           </button>
           {canEdit && items.length > 0 && (
             <button onClick={() => setShowAdd(true)} className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 flex items-center gap-2">
@@ -358,15 +359,16 @@ function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: 
   const [description, setDescription] = useState(item.description ?? "");
   const [duration, setDuration] = useState(item.duration_seconds);
   const [content, setContent] = useState(item.content ?? "");
+  const [hasIntro, setHasIntro] = useState(item.has_intro);
 
   useEffect(() => {
     setTitle(item.title); setArtist(item.artist ?? ""); setDescription(item.description ?? "");
-    setDuration(item.duration_seconds); setContent(item.content ?? "");
+    setDuration(item.duration_seconds); setContent(item.content ?? ""); setHasIntro(item.has_intro);
   }, [item.id]);
 
   const meta = TYPE_META[item.type];
   const Icon = meta.icon;
-  const showEditor = item.type === "item" || item.type === "other";
+  const showEditor = item.type === "item" || item.type === "other" || (item.type === "song" && hasIntro);
 
   const commit = (patch: Partial<Item>) => onSave(patch);
 
@@ -391,6 +393,11 @@ function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: 
                 <label className="text-xs font-medium">Titel</label>
                 <input disabled={!canEdit} value={title} onChange={(e) => { setTitle(e.target.value); commit({ title: e.target.value }); }} className="w-full h-9 px-3 rounded-lg border border-border mt-1" />
               </div>
+              <label className="col-span-2 flex items-center gap-2 text-sm cursor-pointer select-none">
+                <input type="checkbox" disabled={!canEdit} checked={hasIntro} onChange={(e) => { setHasIntro(e.target.checked); commit({ has_intro: e.target.checked }); }} className="h-4 w-4" />
+                <span className="font-medium">INTRO</span>
+                <span className="text-xs text-muted-foreground">— schrijf de intro-tekst van dit liedje</span>
+              </label>
             </>
           ) : (
             <div className="col-span-2">

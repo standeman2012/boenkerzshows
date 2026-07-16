@@ -1,0 +1,1 @@
+ALTER TABLE public.rundown_items ADD COLUMN IF NOT EXISTS has_intro boolean NOT NULL DEFAULT false;

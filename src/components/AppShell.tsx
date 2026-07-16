@@ -8,8 +8,8 @@ import {
   UserCircle,
   LogOut,
   Menu,
-  Bell,
-  Search,
+
+
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
@@ -112,16 +112,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <div className="flex-1 max-w-md relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              placeholder="Zoeken..."
-              className="w-full h-9 pl-9 pr-3 rounded-lg bg-muted/50 border border-transparent focus:bg-background focus:border-border outline-none text-sm"
-            />
-          </div>
-          <button className="p-2 rounded-md hover:bg-muted relative" aria-label="Notificaties">
-            <Bell className="h-5 w-5" />
-          </button>
+          <div className="flex-1" />
+
           <div className="flex items-center gap-2">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover" />
