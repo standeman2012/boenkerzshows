@@ -40,7 +40,7 @@ function expand(entries: Entry[], programs: Program[], weekStart: Date): Instanc
     if (e.recurrence === "once") {
       if (s >= weekStart && s < weekEnd) push(s);
     } else {
-      const step = e.recurrence === "daily" ? 1 : 7;
+      const step = e.recurrence === "daily" ? 1 : e.recurrence === "biweekly" ? 14 : 7;
       let cur = new Date(s);
       while (cur < weekStart) cur = addDays(cur, step);
       while (cur < weekEnd && cur <= until) { push(new Date(cur)); cur = addDays(cur, step); }
