@@ -393,6 +393,11 @@ function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: 
                 <label className="text-xs font-medium">Titel</label>
                 <input disabled={!canEdit} value={title} onChange={(e) => { setTitle(e.target.value); commit({ title: e.target.value }); }} className="w-full h-9 px-3 rounded-lg border border-border mt-1" />
               </div>
+              <label className="col-span-2 flex items-center gap-2 text-sm cursor-pointer select-none">
+                <input type="checkbox" disabled={!canEdit} checked={hasIntro} onChange={(e) => { setHasIntro(e.target.checked); commit({ has_intro: e.target.checked }); }} className="h-4 w-4" />
+                <span className="font-medium">INTRO</span>
+                <span className="text-xs text-muted-foreground">— schrijf de intro-tekst van dit liedje</span>
+              </label>
             </>
           ) : (
             <div className="col-span-2">
