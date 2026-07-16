@@ -226,7 +226,7 @@ export function ProgramGuidePage() {
 
 function ScheduleForm({ weekStart, init, programs, onClose }: { weekStart: Date; init: { dayIdx: number; startMin: number; endMin: number }; programs: Program[]; onClose: () => void }) {
   const [programId, setProgramId] = useState<string>(programs[0]?.id ?? "");
-  const [recurrence, setRecurrence] = useState<"once" | "daily" | "weekly">("once");
+  const [recurrence, setRecurrence] = useState<"once" | "daily" | "weekly" | "biweekly">("once");
   const [until, setUntil] = useState<string>("");
   const [saving, setSaving] = useState(false);
 
