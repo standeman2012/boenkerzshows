@@ -1,0 +1,1 @@
+ALTER TYPE public.recurrence_type ADD VALUE IF NOT EXISTS 'biweekly';

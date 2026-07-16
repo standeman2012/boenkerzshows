@@ -299,7 +299,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "presenter"
       program_type: "live" | "non_stop" | "recorded"
-      recurrence_type: "once" | "daily" | "weekly"
+      recurrence_type: "once" | "daily" | "weekly" | "biweekly"
       rundown_item_type: "item" | "song" | "jingle" | "other"
     }
     CompositeTypes: {
@@ -430,7 +430,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "presenter"],
       program_type: ["live", "non_stop", "recorded"],
-      recurrence_type: ["once", "daily", "weekly"],
+      recurrence_type: ["once", "daily", "weekly", "biweekly"],
       rundown_item_type: ["item", "song", "jingle", "other"],
     },
   },
