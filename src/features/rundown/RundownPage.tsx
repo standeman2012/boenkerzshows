@@ -56,6 +56,9 @@ export function RundownPage() {
   const channelRef = useRef<any>(null);
   const myStateRef = useRef<{ itemId: string | null; pos: number }>({ itemId: null, pos: 1 });
 
+  const selectedIdRef = useRef<string | null>(null);
+  useEffect(() => { selectedIdRef.current = selectedId; }, [selectedId]);
+
   const load = async () => {
     const { data: e } = await supabase
       .from("schedule_entries")
@@ -64,7 +67,7 @@ export function RundownPage() {
     setEntry(e);
     const { data: its } = await supabase.from("rundown_items").select("*").eq("schedule_entry_id", entryId).order("position");
     setItems((its as any) ?? []);
-    if (its && its.length > 0 && !selectedId) setSelectedId(its[0].id);
+    if (its && its.length > 0 && !selectedIdRef.current) setSelectedId(its[0].id);
     setLoading(false);
     if (e && profile) {
       if (isAdmin) setCanEdit(true);

@@ -5,7 +5,7 @@ import { addDays, DAY_LABELS_LONG, fmtDate, fmtTime, startOfWeek } from "@/lib/d
 import { ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 
 type Program = { id: string; name: string; type: "live" | "non_stop" | "recorded" };
-type Entry = { id: string; program_id: string; start_at: string; end_at: string; recurrence: "once" | "daily" | "weekly"; recurrence_until: string | null };
+type Entry = { id: string; program_id: string; start_at: string; end_at: string; recurrence: "once" | "daily" | "weekly" | "biweekly"; recurrence_until: string | null };
 
 const HOUR_HEIGHT = 48; // px per hour
 const TOTAL_HEIGHT = HOUR_HEIGHT * 24;
@@ -40,7 +40,7 @@ function expand(entries: Entry[], programs: Program[], weekStart: Date): Instanc
     if (e.recurrence === "once") {
       if (s >= weekStart && s < weekEnd) push(s);
     } else {
-      const step = e.recurrence === "daily" ? 1 : 7;
+      const step = e.recurrence === "daily" ? 1 : e.recurrence === "biweekly" ? 14 : 7;
       let cur = new Date(s);
       while (cur < weekStart) cur = addDays(cur, step);
       while (cur < weekEnd && cur <= until) { push(new Date(cur)); cur = addDays(cur, step); }
@@ -226,7 +226,7 @@ export function ProgramGuidePage() {
 
 function ScheduleForm({ weekStart, init, programs, onClose }: { weekStart: Date; init: { dayIdx: number; startMin: number; endMin: number }; programs: Program[]; onClose: () => void }) {
   const [programId, setProgramId] = useState<string>(programs[0]?.id ?? "");
-  const [recurrence, setRecurrence] = useState<"once" | "daily" | "weekly">("once");
+  const [recurrence, setRecurrence] = useState<"once" | "daily" | "weekly" | "biweekly">("once");
   const [until, setUntil] = useState<string>("");
   const [saving, setSaving] = useState(false);
 
@@ -269,10 +269,10 @@ function ScheduleForm({ weekStart, init, programs, onClose }: { weekStart: Date;
           </div>
           <div>
             <label className="text-sm font-medium">Herhaling</label>
-            <div className="flex gap-2 mt-1">
-              {(["once", "daily", "weekly"] as const).map((r) => (
-                <button key={r} type="button" onClick={() => setRecurrence(r)} className={`flex-1 h-9 rounded-lg border text-sm ${recurrence === r ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>
-                  {r === "once" ? "Eenmalig" : r === "daily" ? "Dagelijks" : "Wekelijks"}
+            <div className="grid grid-cols-2 gap-2 mt-1">
+              {(["once", "daily", "weekly", "biweekly"] as const).map((r) => (
+                <button key={r} type="button" onClick={() => setRecurrence(r)} className={`h-9 rounded-lg border text-sm ${recurrence === r ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>
+                  {r === "once" ? "Eenmalig" : r === "daily" ? "Dagelijks" : r === "weekly" ? "Wekelijks" : "Om de 2 weken"}
                 </button>
               ))}
             </div>
