@@ -269,10 +269,10 @@ function ScheduleForm({ weekStart, init, programs, onClose }: { weekStart: Date;
           </div>
           <div>
             <label className="text-sm font-medium">Herhaling</label>
-            <div className="flex gap-2 mt-1">
-              {(["once", "daily", "weekly"] as const).map((r) => (
-                <button key={r} type="button" onClick={() => setRecurrence(r)} className={`flex-1 h-9 rounded-lg border text-sm ${recurrence === r ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>
-                  {r === "once" ? "Eenmalig" : r === "daily" ? "Dagelijks" : "Wekelijks"}
+            <div className="grid grid-cols-2 gap-2 mt-1">
+              {(["once", "daily", "weekly", "biweekly"] as const).map((r) => (
+                <button key={r} type="button" onClick={() => setRecurrence(r)} className={`h-9 rounded-lg border text-sm ${recurrence === r ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>
+                  {r === "once" ? "Eenmalig" : r === "daily" ? "Dagelijks" : r === "weekly" ? "Wekelijks" : "Om de 2 weken"}
                 </button>
               ))}
             </div>
