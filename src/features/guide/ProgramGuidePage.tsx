@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { addDays, DAY_LABELS_LONG, fmtDate, fmtTime, startOfWeek } from "@/lib/date-utils";
-import { ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, X, Trash2 } from "lucide-react";
 
 type Program = { id: string; name: string; type: "live" | "non_stop" | "recorded" };
 type Entry = { id: string; program_id: string; start_at: string; end_at: string; recurrence: "once" | "daily" | "weekly" | "biweekly"; recurrence_until: string | null };
