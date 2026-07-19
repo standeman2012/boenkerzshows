@@ -376,7 +376,7 @@ function DurationInput({ value, onChange, disabled }: { value: number; onChange:
   );
 }
 
-function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: { item: Item; canEdit: boolean; remoteCarets: RemoteCaret[]; onSelectionChange: (pos: number) => void; onSave: (p: Partial<Item>) => void }) {
+function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave, onBroadcastContent }: { item: Item; canEdit: boolean; remoteCarets: RemoteCaret[]; onSelectionChange: (pos: number) => void; onSave: (p: Partial<Item>) => void; onBroadcastContent: (html: string) => void }) {
   const [title, setTitle] = useState(item.title);
   const [artist, setArtist] = useState(item.artist ?? "");
   const [description, setDescription] = useState(item.description ?? "");
@@ -386,8 +386,11 @@ function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: 
 
   useEffect(() => {
     setTitle(item.title); setArtist(item.artist ?? ""); setDescription(item.description ?? "");
-    setDuration(item.duration_seconds); setContent(item.content ?? ""); setHasIntro(item.has_intro);
+    setDuration(item.duration_seconds); setHasIntro(item.has_intro);
   }, [item.id]);
+
+  // Sync content from prop (remote broadcasts / DB) — RichTextEditor guards focus internally.
+  useEffect(() => { setContent(item.content ?? ""); }, [item.content]);
 
   const meta = TYPE_META[item.type];
   const Icon = meta.icon;
