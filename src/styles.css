@@ -117,6 +117,28 @@
   }
 }
 
+/* Human touches */
+.font-hand { font-family: "Caveat", "Bradley Hand", cursive; }
+.font-display { font-family: "Fraunces", "Iowan Old Style", Georgia, serif; }
+.paper-bg {
+  background-color: #fbfaf6;
+  background-image:
+    radial-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
+    radial-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 22px 22px, 11px 11px;
+  background-position: 0 0, 6px 6px;
+}
+.tape {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg);
+  width: 64px; height: 18px;
+  background: rgba(255, 223, 128, 0.7);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.rotate-tiny-1 { transform: rotate(-1.2deg); }
+.rotate-tiny-2 { transform: rotate(0.8deg); }
+.rotate-tiny-3 { transform: rotate(-0.5deg); }
+.rotate-tiny-4 { transform: rotate(1.5deg); }
+
 /* TipTap prose */
 .tiptap {
   outline: none;
