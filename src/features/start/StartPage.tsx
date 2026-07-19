@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth";
 import { addDays, DAY_LABELS_LONG, fmtDate, startOfWeek } from "@/lib/date-utils";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Coffee, Sun, Moon } from "lucide-react";
 
 type Entry = {
   id: string;
