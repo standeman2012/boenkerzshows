@@ -103,6 +103,18 @@ export function RundownPage() {
       });
       setPresence(t);
     });
+    // Live content streaming — apply remote HTML to items[] so peers see typing instantly.
+    ch.on("broadcast", { event: "content" }, ({ payload }: any) => {
+      if (!payload?.itemId || payload.from === profile.id) return;
+      setItems((prev) => prev.map((x) => (x.id === payload.itemId ? { ...x, content: payload.html } : x)));
+    });
+    ch.on("broadcast", { event: "caret" }, ({ payload }: any) => {
+      if (!payload?.userId || payload.userId === profile.id) return;
+      setPresence((prev) => ({
+        ...prev,
+        [payload.userId]: { name: payload.name, itemId: payload.itemId ?? null, pos: payload.pos ?? 1 },
+      }));
+    });
     ch.subscribe(async (s) => {
       if (s === "SUBSCRIBED") await ch.track({ name: profile.first_name, itemId: myStateRef.current.itemId, pos: myStateRef.current.pos });
     });
@@ -111,7 +123,17 @@ export function RundownPage() {
 
   const trackPresence = (itemId: string | null, pos: number) => {
     myStateRef.current = { itemId, pos };
-    channelRef.current?.track({ name: profile?.first_name ?? "?", itemId, pos });
+    const ch = channelRef.current;
+    if (!ch || !profile) return;
+    ch.track({ name: profile.first_name, itemId, pos });
+    // Also send a broadcast for near-zero-latency caret movement.
+    ch.send({ type: "broadcast", event: "caret", payload: { userId: profile.id, name: profile.first_name, itemId, pos } });
+  };
+
+  const broadcastContent = (itemId: string, html: string) => {
+    const ch = channelRef.current;
+    if (!ch || !profile) return;
+    ch.send({ type: "broadcast", event: "content", payload: { itemId, html, from: profile.id } });
   };
 
   useEffect(() => {
