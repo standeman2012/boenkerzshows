@@ -451,7 +451,7 @@ function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave, on
             editable={canEdit}
             remoteCarets={remoteCarets}
             onSelection={(pos) => onSelectionChange(pos)}
-            onLocalChange={(html) => setContent(html)}
+            onLocalChange={(html) => { setContent(html); onBroadcastContent(html); }}
             onChange={(html) => { setContent(html); commit({ content: html }); }}
           />
         </div>
