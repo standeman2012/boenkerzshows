@@ -337,6 +337,7 @@ export function RundownPage() {
                 remoteCarets={remoteCarets}
                 onSelectionChange={(pos) => trackPresence(selected.id, pos)}
                 onSave={(patch) => updateItem(selected.id, patch)}
+                onBroadcastContent={(html) => broadcastContent(selected.id, html)}
               />
             ) : <div className="text-muted-foreground text-sm">Selecteer een item</div>}
           </section>
