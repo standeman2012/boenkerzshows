@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { addDays, DAY_LABELS_LONG, fmtDate, fmtTime, startOfWeek } from "@/lib/date-utils";
-import { ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, X, Trash2 } from "lucide-react";
 
 type Program = { id: string; name: string; type: "live" | "non_stop" | "recorded" };
 type Entry = { id: string; program_id: string; start_at: string; end_at: string; recurrence: "once" | "daily" | "weekly" | "biweekly"; recurrence_until: string | null };
@@ -179,17 +179,30 @@ export function ProgramGuidePage() {
                     <div
                       key={idx}
                       data-instance
-                      onClick={(e) => { e.stopPropagation(); if (isAdmin) deleteEntry(x.entry.id); }}
-                      className="absolute left-1 right-1 rounded-md px-2 py-1 text-white text-xs shadow-sm cursor-pointer hover:brightness-110"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      className="absolute left-1 right-1 rounded-md px-2 py-1 text-white text-xs shadow-sm group"
                       style={{
                         top: (startMin / 60) * HOUR_HEIGHT,
                         height: Math.max((dur / 60) * HOUR_HEIGHT - 2, 20),
                         backgroundColor: color,
                       }}
-                      title={isAdmin ? "Klik om te verwijderen" : ""}
                     >
-                      <div className="font-semibold truncate">{x.program?.name ?? "?"}</div>
-                      <div className="opacity-90 text-[10px]">{fmtTime(x.start)} - {fmtTime(x.end)}</div>
+                      <div className="flex items-start justify-between gap-1">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold truncate">{x.program?.name ?? "?"}</div>
+                          <div className="opacity-90 text-[10px]">{fmtTime(x.start)} - {fmtTime(x.end)}</div>
+                        </div>
+                        {isAdmin && (
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); deleteEntry(x.entry.id); }}
+                            title="Verwijderen"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 hover:bg-black/40 rounded p-1 shrink-0"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

@@ -54,7 +54,8 @@ export function RichTextEditor({
   useEffect(() => {
     if (!editor || !wrapperRef.current) return;
     const compute = () => {
-      const wrap = wrapperRef.current!.getBoundingClientRect();
+      if (!wrapperRef.current) return;
+      const wrap = wrapperRef.current.getBoundingClientRect();
       const size = editor.state.doc.content.size;
       const next = remoteCarets.map((c) => {
         try {
@@ -68,8 +69,20 @@ export function RichTextEditor({
       setCaretRects(next);
     };
     compute();
-    const t = setInterval(compute, 500);
-    return () => clearInterval(t);
+    // Recompute whenever the local doc/selection changes so remote carets follow live typing.
+    const onTx = () => compute();
+    editor.on("transaction", onTx);
+    editor.on("selectionUpdate", onTx);
+    // Also recompute on scroll/resize so carets stay glued to the right glyph.
+    const wrap = wrapperRef.current;
+    wrap.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      editor.off("transaction", onTx);
+      editor.off("selectionUpdate", onTx);
+      wrap.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
   }, [editor, remoteCarets]);
 
   if (!editor) return null;

@@ -17,11 +17,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { initials } from "@/lib/date-utils";
 
-const NAV_BASE = [
+const NAV_PRESENTER = [
+  { to: "/", label: "Startpagina", icon: Home },
+  { to: "/programmas", label: "Programma's", icon: Radio },
+  { to: "/presentatoren", label: "Presentatoren", icon: Users },
+  { to: "/instellingen", label: "Instellingen", icon: Settings },
+];
+
+const NAV_ADMIN = [
   { to: "/", label: "Startpagina", icon: Home },
   { to: "/programmas", label: "Programma's", icon: Radio },
   { to: "/programmagids", label: "Programmagids", icon: CalendarDays },
   { to: "/presentatoren", label: "Presentatoren", icon: Users },
+  { to: "/gebruikers", label: "Gebruikers", icon: UserCircle },
   { to: "/instellingen", label: "Instellingen", icon: Settings },
 ];
 
@@ -48,9 +56,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const nav = isAdmin
-    ? [...NAV_BASE.slice(0, 4), { to: "/gebruikers", label: "Gebruikers", icon: UserCircle }, NAV_BASE[4]]
-    : NAV_BASE;
+  const nav = isAdmin ? NAV_ADMIN : NAV_PRESENTER;
 
   const bgStyle = settings?.background_url
     ? { backgroundImage: `url(${settings.background_url})`, backgroundSize: "cover", backgroundPosition: "center" }

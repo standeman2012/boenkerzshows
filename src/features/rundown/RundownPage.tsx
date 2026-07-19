@@ -103,6 +103,18 @@ export function RundownPage() {
       });
       setPresence(t);
     });
+    // Live content streaming — apply remote HTML to items[] so peers see typing instantly.
+    ch.on("broadcast", { event: "content" }, ({ payload }: any) => {
+      if (!payload?.itemId || payload.from === profile.id) return;
+      setItems((prev) => prev.map((x) => (x.id === payload.itemId ? { ...x, content: payload.html } : x)));
+    });
+    ch.on("broadcast", { event: "caret" }, ({ payload }: any) => {
+      if (!payload?.userId || payload.userId === profile.id) return;
+      setPresence((prev) => ({
+        ...prev,
+        [payload.userId]: { name: payload.name, itemId: payload.itemId ?? null, pos: payload.pos ?? 1 },
+      }));
+    });
     ch.subscribe(async (s) => {
       if (s === "SUBSCRIBED") await ch.track({ name: profile.first_name, itemId: myStateRef.current.itemId, pos: myStateRef.current.pos });
     });
@@ -111,7 +123,17 @@ export function RundownPage() {
 
   const trackPresence = (itemId: string | null, pos: number) => {
     myStateRef.current = { itemId, pos };
-    channelRef.current?.track({ name: profile?.first_name ?? "?", itemId, pos });
+    const ch = channelRef.current;
+    if (!ch || !profile) return;
+    ch.track({ name: profile.first_name, itemId, pos });
+    // Also send a broadcast for near-zero-latency caret movement.
+    ch.send({ type: "broadcast", event: "caret", payload: { userId: profile.id, name: profile.first_name, itemId, pos } });
+  };
+
+  const broadcastContent = (itemId: string, html: string) => {
+    const ch = channelRef.current;
+    if (!ch || !profile) return;
+    ch.send({ type: "broadcast", event: "content", payload: { itemId, html, from: profile.id } });
   };
 
   useEffect(() => {
@@ -315,6 +337,7 @@ export function RundownPage() {
                 remoteCarets={remoteCarets}
                 onSelectionChange={(pos) => trackPresence(selected.id, pos)}
                 onSave={(patch) => updateItem(selected.id, patch)}
+                onBroadcastContent={(html) => broadcastContent(selected.id, html)}
               />
             ) : <div className="text-muted-foreground text-sm">Selecteer een item</div>}
           </section>
@@ -353,7 +376,7 @@ function DurationInput({ value, onChange, disabled }: { value: number; onChange:
   );
 }
 
-function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: { item: Item; canEdit: boolean; remoteCarets: RemoteCaret[]; onSelectionChange: (pos: number) => void; onSave: (p: Partial<Item>) => void }) {
+function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave, onBroadcastContent }: { item: Item; canEdit: boolean; remoteCarets: RemoteCaret[]; onSelectionChange: (pos: number) => void; onSave: (p: Partial<Item>) => void; onBroadcastContent: (html: string) => void }) {
   const [title, setTitle] = useState(item.title);
   const [artist, setArtist] = useState(item.artist ?? "");
   const [description, setDescription] = useState(item.description ?? "");
@@ -363,8 +386,11 @@ function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: 
 
   useEffect(() => {
     setTitle(item.title); setArtist(item.artist ?? ""); setDescription(item.description ?? "");
-    setDuration(item.duration_seconds); setContent(item.content ?? ""); setHasIntro(item.has_intro);
+    setDuration(item.duration_seconds); setHasIntro(item.has_intro);
   }, [item.id]);
+
+  // Sync content from prop (remote broadcasts / DB) — RichTextEditor guards focus internally.
+  useEffect(() => { setContent(item.content ?? ""); }, [item.content]);
 
   const meta = TYPE_META[item.type];
   const Icon = meta.icon;
@@ -425,7 +451,7 @@ function ItemDetail({ item, canEdit, remoteCarets, onSelectionChange, onSave }: 
             editable={canEdit}
             remoteCarets={remoteCarets}
             onSelection={(pos) => onSelectionChange(pos)}
-            onLocalChange={(html) => setContent(html)}
+            onLocalChange={(html) => { setContent(html); onBroadcastContent(html); }}
             onChange={(html) => { setContent(html); commit({ content: html }); }}
           />
         </div>
