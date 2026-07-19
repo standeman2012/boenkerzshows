@@ -53,6 +53,7 @@ export function StartPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { profile } = useAuth();
 
   useEffect(() => {
     let ignore = false;
@@ -81,37 +82,57 @@ export function StartPage() {
   const instances = expandEntries(entries, weekStart);
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
+  const hour = new Date().getHours();
+  const { greet, GreetIcon, note } =
+    hour < 6
+      ? { greet: "Nog wakker", GreetIcon: Moon, note: "de nacht is van jou" }
+      : hour < 12
+      ? { greet: "Goeiemorgen", GreetIcon: Coffee, note: "een frisse kop koffie erbij?" }
+      : hour < 18
+      ? { greet: "Hey", GreetIcon: Sun, note: "de middag knalt door" }
+      : { greet: "Goeieavond", GreetIcon: Moon, note: "tijd om te schitteren" };
+
+  const rotations = ["rotate-tiny-1", "rotate-tiny-2", "rotate-tiny-3", "rotate-tiny-4"];
+
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-6 min-h-full paper-bg">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Startpagina</h1>
-          <p className="text-sm text-muted-foreground">Klik op een uitzending voor het draaiboek</p>
+          <div className="flex items-center gap-2 text-primary">
+            <GreetIcon className="h-5 w-5" />
+            <span className="font-hand text-2xl">{note}</span>
+          </div>
+          <h1 className="font-display text-4xl font-bold mt-1">
+            {greet}{profile?.first_name ? `, ${profile.first_name}` : ""} 👋
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">Klik op een uitzending om het draaiboek te openen.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="p-2 rounded-lg border border-border hover:bg-muted" onClick={() => setWeekStart(addDays(weekStart, -7))}><ChevronLeft className="h-4 w-4" /></button>
-          <button className="px-3 h-9 rounded-lg border border-border hover:bg-muted text-sm" onClick={() => setWeekStart(startOfWeek(new Date()))}>Deze week</button>
-          <button className="p-2 rounded-lg border border-border hover:bg-muted" onClick={() => setWeekStart(addDays(weekStart, 7))}><ChevronRight className="h-4 w-4" /></button>
+          <button className="p-2 rounded-lg border border-border hover:bg-muted bg-card" onClick={() => setWeekStart(addDays(weekStart, -7))}><ChevronLeft className="h-4 w-4" /></button>
+          <button className="px-3 h-9 rounded-lg border border-border hover:bg-muted text-sm bg-card" onClick={() => setWeekStart(startOfWeek(new Date()))}>Deze week</button>
+          <button className="p-2 rounded-lg border border-border hover:bg-muted bg-card" onClick={() => setWeekStart(addDays(weekStart, 7))}><ChevronRight className="h-4 w-4" /></button>
         </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
       ) : (
-        <div className="grid grid-cols-7 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
           {days.map((d, i) => {
             const dayInstances = instances
               .filter((x) => x.start.toDateString() === d.toDateString())
               .sort((a, b) => a.start.getTime() - b.start.getTime());
+            const isToday = d.toDateString() === new Date().toDateString();
             return (
-              <div key={i} className="bg-muted/30 rounded-xl p-3 min-h-[400px]">
+              <div key={i} className={`bg-white/70 backdrop-blur rounded-2xl p-3 min-h-[400px] border ${isToday ? "border-primary/50 shadow-md" : "border-black/5"}`}>
                 <div className="text-center mb-3">
                   <div className="text-xs font-medium text-muted-foreground">{DAY_LABELS_LONG[i]}</div>
-                  <div className="text-lg font-bold">{fmtDate(d)}</div>
+                  <div className={`font-display text-2xl ${isToday ? "text-primary" : ""}`}>{fmtDate(d)}</div>
+                  {isToday && <div className="font-hand text-primary text-sm -mt-1">vandaag</div>}
                 </div>
                 <div className="space-y-2">
-                  {dayInstances.length === 0 && <div className="text-xs text-center text-muted-foreground py-6">Geen shows</div>}
-                  {dayInstances.map((x) => (
+                  {dayInstances.length === 0 && <div className="font-hand text-center text-muted-foreground py-6 text-lg">…rust</div>}
+                  {dayInstances.map((x, idx) => (
                     <button
                       key={x.instanceKey}
                       onClick={() =>
@@ -121,9 +142,12 @@ export function StartPage() {
                           search: { d: x.start.toISOString().slice(0, 10) } as any,
                         })
                       }
-                      className={`w-full text-left rounded-lg p-3 bg-card hover:shadow-md transition-all ${typeClass(x.entry.program?.type ?? "live")}`}
+                      className={`w-full text-left rounded-lg p-3 bg-card hover:shadow-md hover:-translate-y-0.5 transition-all ${typeClass(x.entry.program?.type ?? "live")} ${rotations[idx % rotations.length]}`}
                     >
                       <div className="text-sm font-semibold truncate">{x.entry.program?.name ?? "Onbekend"}</div>
+                      <div className="text-[11px] opacity-75 font-hand text-base leading-tight mt-0.5">
+                        {x.start.toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" })}
+                      </div>
                     </button>
                   ))}
                 </div>
